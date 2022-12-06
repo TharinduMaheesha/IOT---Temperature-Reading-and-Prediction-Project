@@ -1,0 +1,294 @@
+[
+    {
+        "id": "2af95517e1684b05",
+        "type": "tab",
+        "label": "Prediction exec and visualization",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "9178e255096a3c80",
+        "type": "debug",
+        "z": "2af95517e1684b05",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 710,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "9ceb1640974547dd",
+        "type": "pythonshell in",
+        "z": "2af95517e1684b05",
+        "name": "python",
+        "pyfile": "D:/IOT/Time_series_prediction.py",
+        "virtualenv": "",
+        "continuous": false,
+        "stdInData": false,
+        "x": 510,
+        "y": 220,
+        "wires": [
+            [
+                "9178e255096a3c80",
+                "b0d545be231c00c9"
+            ]
+        ]
+    },
+    {
+        "id": "2762bad717aae875",
+        "type": "ui_button",
+        "z": "2af95517e1684b05",
+        "name": "",
+        "group": "75b11f368767b37c",
+        "order": 2,
+        "width": 5,
+        "height": 3,
+        "passthru": true,
+        "label": "Refresh",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "#000000",
+        "className": "",
+        "icon": "https://icons-for-free.com/iconfiles/png/512/refresh+reload+sync+update+icon-1320137054460780608.png",
+        "payload": "on",
+        "payloadType": "str",
+        "topic": "SELECT * from (select * FROM `predicts` limit 12) var1 ORDER BY (date) ASC",
+        "topicType": "str",
+        "x": 320,
+        "y": 220,
+        "wires": [
+            [
+                "9ceb1640974547dd"
+            ]
+        ]
+    },
+    {
+        "id": "b0d545be231c00c9",
+        "type": "ui_text",
+        "z": "2af95517e1684b05",
+        "group": "75b11f368767b37c",
+        "order": 8,
+        "width": 7,
+        "height": 1,
+        "name": "",
+        "label": "Last Update :",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "className": "",
+        "x": 720,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "b8d5ed8849edd6f3",
+        "type": "mysql",
+        "z": "2af95517e1684b05",
+        "mydb": "3c935043d87b0ec9",
+        "name": "Prediction",
+        "x": 460,
+        "y": 320,
+        "wires": [
+            [
+                "b2afe7216581e567",
+                "4c8ca975a2eca4cf"
+            ]
+        ]
+    },
+    {
+        "id": "f0277d6502af86a6",
+        "type": "inject",
+        "z": "2af95517e1684b05",
+        "name": "Predict_query",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "SELECT * from (select * FROM `predicts` ORDER BY (date) DESC limit 12) var1 ORDER BY (date) ASC",
+        "x": 160,
+        "y": 320,
+        "wires": [
+            [
+                "b8d5ed8849edd6f3"
+            ]
+        ]
+    },
+    {
+        "id": "b2afe7216581e567",
+        "type": "function",
+        "z": "2af95517e1684b05",
+        "name": "",
+        "func": "var payload = msg.payload\nvar dates = [];\nvar temperatures = [];\n\n\nfor(let i = 0 ; i < payload.length ; i++){\n    \n    var date = payload[i].date.toLocaleDateString('default', { month: 'short' , year: 'numeric' })\n    var temp = payload[i][\"temperature\"];\n    temperatures.push(temp);\n    dates.push(date)\n    \n}\nmsg.payload = [{\n    \"series\" : [\"Temperature\"],\n    \"data\": [temperatures],\n    \"labels\": dates\n    \n}];\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 320,
+        "wires": [
+            [
+                "860d703e49827363",
+                "c4772d6a70ec3add"
+            ]
+        ]
+    },
+    {
+        "id": "860d703e49827363",
+        "type": "debug",
+        "z": "2af95517e1684b05",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 890,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "c4772d6a70ec3add",
+        "type": "ui_chart",
+        "z": "2af95517e1684b05",
+        "name": "",
+        "group": "66bd22b6840e1f3b",
+        "order": 1,
+        "width": 21,
+        "height": 7,
+        "label": "Average Temperature - 12 Months Ahead",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "Y-M-D",
+        "interpolate": "linear",
+        "nodata": "No data Recieved",
+        "dot": true,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "0",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#ff7d0e",
+            "#ff7d0e",
+            "#ff7f0e",
+            "#ff7d0e",
+            "#ff7d0e",
+            "#ff7d0e",
+            "#ff7d0e",
+            "#9467bd",
+            "#ff7d0e"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 980,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ff47161d70c425c1",
+        "type": "inject",
+        "z": "2af95517e1684b05",
+        "name": "First trigger",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 130,
+        "y": 220,
+        "wires": [
+            [
+                "2762bad717aae875"
+            ]
+        ]
+    },
+    {
+        "id": "4c8ca975a2eca4cf",
+        "type": "debug",
+        "z": "2af95517e1684b05",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "75b11f368767b37c",
+        "type": "ui_group",
+        "name": "Refresh",
+        "tab": "7245dd6a6c512924",
+        "order": 3,
+        "disp": true,
+        "width": "7",
+        "collapse": true,
+        "className": ""
+    },
+    {
+        "id": "3c935043d87b0ec9",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "127.0.0.1",
+        "port": "3308",
+        "db": "IOTDBA_2022_05_database",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "66bd22b6840e1f3b",
+        "type": "ui_group",
+        "name": "Forecast",
+        "tab": "7245dd6a6c512924",
+        "order": 4,
+        "disp": true,
+        "width": "21",
+        "collapse": true,
+        "className": ""
+    },
+    {
+        "id": "7245dd6a6c512924",
+        "type": "ui_tab",
+        "name": "Temperature Monitoring system",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]

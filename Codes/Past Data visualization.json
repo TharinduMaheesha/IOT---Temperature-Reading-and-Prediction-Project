@@ -1,0 +1,162 @@
+[
+    {
+        "id": "a9e591d02dbe10f2",
+        "type": "tab",
+        "label": "Past data visualization",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "f1a42bae68b3e240",
+        "type": "ui_chart",
+        "z": "a9e591d02dbe10f2",
+        "name": "",
+        "group": "66bd22b6840e1f3b",
+        "order": 2,
+        "width": 21,
+        "height": 7,
+        "label": "Average Temperature - Past 12 Months",
+        "chartType": "horizontalBar",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "bezier",
+        "nodata": "No Data Recieved",
+        "dot": true,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "12",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": true,
+        "useUTC": false,
+        "colors": [
+            "#e8d502",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 760,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c44b87fca38cf3c6",
+        "type": "mysql",
+        "z": "a9e591d02dbe10f2",
+        "mydb": "3c935043d87b0ec9",
+        "name": "Past Data",
+        "x": 300,
+        "y": 180,
+        "wires": [
+            [
+                "3c16d5fce2235743"
+            ]
+        ]
+    },
+    {
+        "id": "fac1a280118ef64f",
+        "type": "inject",
+        "z": "a9e591d02dbe10f2",
+        "name": "Past_query",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "SELECT * ,TIMESTAMPDIFF(month , date , CURRENT_DATE ) FROM `predicts` WHERE TIMESTAMPDIFF(month , date , CURRENT_DATE ) <= 12 and TIMESTAMPDIFF(month , date , CURRENT_DATE ) >= 1 order by (date) ASC",
+        "payload": "",
+        "payloadType": "date",
+        "x": 110,
+        "y": 180,
+        "wires": [
+            [
+                "c44b87fca38cf3c6"
+            ]
+        ]
+    },
+    {
+        "id": "3c16d5fce2235743",
+        "type": "function",
+        "z": "a9e591d02dbe10f2",
+        "name": "",
+        "func": "var payload = msg.payload\nvar dates = [];\nvar temperatures = [];\n\n\nfor(let i = 0 ; i < payload.length ; i++){\n    \n    var date = payload[i].date.toLocaleDateString('default', { month: 'short' , year: 'numeric' })\n    var temp = payload[i][\"temperature\"];\n    temperatures.push(temp);\n    dates.push(date)\n    \n}\nmsg.payload = [{\n    \"series\" : [\"Temperature\"],\n    \"data\": [temperatures],\n    \"labels\": dates\n    \n}];\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 180,
+        "wires": [
+            [
+                "f1a42bae68b3e240",
+                "b9888ad44f3b6472"
+            ]
+        ]
+    },
+    {
+        "id": "b9888ad44f3b6472",
+        "type": "debug",
+        "z": "a9e591d02dbe10f2",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 670,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "66bd22b6840e1f3b",
+        "type": "ui_group",
+        "name": "Forecast",
+        "tab": "7245dd6a6c512924",
+        "order": 4,
+        "disp": true,
+        "width": "21",
+        "collapse": true,
+        "className": ""
+    },
+    {
+        "id": "3c935043d87b0ec9",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "127.0.0.1",
+        "port": "3308",
+        "db": "IOTDBA_2022_05_database",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "7245dd6a6c512924",
+        "type": "ui_tab",
+        "name": "Temperature Monitoring system",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]

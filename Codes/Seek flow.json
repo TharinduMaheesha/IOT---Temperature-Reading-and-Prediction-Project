@@ -1,0 +1,161 @@
+[
+    {
+        "id": "dfc3698caf3ac4b2",
+        "type": "tab",
+        "label": "Seek flow",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "42310bc6596fa77e",
+        "type": "function",
+        "z": "dfc3698caf3ac4b2",
+        "name": "",
+        "func": "\n\nvar date = new Date(msg.payload)\nvar string_date = date.toLocaleDateString()\nvar date_split = string_date.split(\"/\")\nvar arranged_date = date_split[2]+\"-\"+date_split[0]+\"-\"+date_split[1];\nvar q1 = \"SELECT temperature FROM `predicts` WHERE date = '\"\nvar q2 = q1.concat(arranged_date)\nvar query = q2.concat(\"'\")\n\n\n\nmsg.topic = query\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 140,
+        "wires": [
+            [
+                "62aaa71c51c629ff"
+            ]
+        ]
+    },
+    {
+        "id": "62aaa71c51c629ff",
+        "type": "mysql",
+        "z": "dfc3698caf3ac4b2",
+        "mydb": "3c935043d87b0ec9",
+        "name": "",
+        "x": 580,
+        "y": 80,
+        "wires": [
+            [
+                "04f3a1574aabead5"
+            ]
+        ]
+    },
+    {
+        "id": "04f3a1574aabead5",
+        "type": "function",
+        "z": "dfc3698caf3ac4b2",
+        "name": "",
+        "func": "\nvar temperature = msg.payload[0].temperature\n\nmsg.payload = temperature\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 80,
+        "wires": [
+            [
+                "28104c5c59fcd3e8",
+                "8f10697bd1cdbb18"
+            ]
+        ]
+    },
+    {
+        "id": "28104c5c59fcd3e8",
+        "type": "debug",
+        "z": "dfc3698caf3ac4b2",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1030,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "c27d42beb125507d",
+        "type": "ui_text_input",
+        "z": "dfc3698caf3ac4b2",
+        "name": "",
+        "label": "",
+        "tooltip": "Select respective year and month to view the average temperature",
+        "group": "29c159f8c1bcfd67",
+        "order": 1,
+        "width": 14,
+        "height": 1,
+        "passthru": true,
+        "mode": "month",
+        "delay": 300,
+        "topic": "topic",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "msg",
+        "x": 150,
+        "y": 140,
+        "wires": [
+            [
+                "42310bc6596fa77e"
+            ]
+        ]
+    },
+    {
+        "id": "8f10697bd1cdbb18",
+        "type": "ui_gauge",
+        "z": "dfc3698caf3ac4b2",
+        "name": "",
+        "group": "29c159f8c1bcfd67",
+        "order": 2,
+        "width": 14,
+        "height": 3,
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "° C",
+        "format": "{{value}}",
+        "min": "-55",
+        "max": "155 ",
+        "colors": [
+            "#3884ff",
+            "#e6de00",
+            "#ca3838"
+        ],
+        "seg1": "20",
+        "seg2": "30",
+        "className": "",
+        "x": 890,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "3c935043d87b0ec9",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "127.0.0.1",
+        "port": "3308",
+        "db": "IOTDBA_2022_05_database",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "29c159f8c1bcfd67",
+        "type": "ui_group",
+        "name": "Select Month and Year",
+        "tab": "7245dd6a6c512924",
+        "order": 2,
+        "disp": true,
+        "width": "14",
+        "collapse": true,
+        "className": ""
+    },
+    {
+        "id": "7245dd6a6c512924",
+        "type": "ui_tab",
+        "name": "Temperature Monitoring system",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]

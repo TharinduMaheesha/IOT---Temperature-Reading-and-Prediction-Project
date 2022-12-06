@@ -1,0 +1,296 @@
+[
+    {
+        "id": "a72c3daf4eab12bd",
+        "type": "tab",
+        "label": "MQTT Flow - Getting sensor readings",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "3a0edd39f60ab7ee",
+        "type": "mqtt in",
+        "z": "a72c3daf4eab12bd",
+        "name": "",
+        "topic": "IOTDBA_2022_05",
+        "qos": "1",
+        "datatype": "auto",
+        "broker": "94ac7b6760a7cb02",
+        "nl": false,
+        "rap": true,
+        "rh": "1",
+        "inputs": 0,
+        "x": 130,
+        "y": 240,
+        "wires": [
+            [
+                "1afe60135659c1be",
+                "5074c62be16a2343",
+                "7220467776257cfd",
+                "d1b8608e49263482"
+            ]
+        ]
+    },
+    {
+        "id": "1afe60135659c1be",
+        "type": "debug",
+        "z": "a72c3daf4eab12bd",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 390,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "5074c62be16a2343",
+        "type": "ui_gauge",
+        "z": "a72c3daf4eab12bd",
+        "name": "Temperature Gauge",
+        "group": "9f3f678c8a048aa6",
+        "order": 1,
+        "width": 12,
+        "height": 11,
+        "gtype": "donut",
+        "title": "",
+        "label": "° Celcius",
+        "format": "{{msg.payload}}",
+        "min": "-55",
+        "max": "155",
+        "colors": [
+            "#0065b3",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "20",
+        "seg2": "30",
+        "className": "",
+        "x": 400,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "7220467776257cfd",
+        "type": "ui_chart",
+        "z": "a72c3daf4eab12bd",
+        "name": "Temperature Chart",
+        "group": "9f3f678c8a048aa6",
+        "order": 2,
+        "width": 12,
+        "height": 8,
+        "label": "",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm",
+        "interpolate": "step",
+        "nodata": "",
+        "dot": true,
+        "ymin": "0",
+        "ymax": "40",
+        "removeOlder": "10",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": true,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "1",
+        "x": 390,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3cb228ae42de548b",
+        "type": "mysql",
+        "z": "a72c3daf4eab12bd",
+        "mydb": "3c935043d87b0ec9",
+        "name": "",
+        "x": 720,
+        "y": 220,
+        "wires": [
+            [
+                "3f0bbe8ceb75bbc5"
+            ]
+        ]
+    },
+    {
+        "id": "3f0bbe8ceb75bbc5",
+        "type": "debug",
+        "z": "a72c3daf4eab12bd",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 950,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "d1b8608e49263482",
+        "type": "function",
+        "z": "a72c3daf4eab12bd",
+        "name": "Current data save query",
+        "func": "\nvar payload = msg.payload\n\nvar q1 = \"INSERT INTO `curr_data` (`date`, `temperature`) VALUES (CURRENT_TIMESTAMP, \"\nvar q2 = q1.concat(payload)\nvar query = q2.concat(\")\")\n\nmsg.topic = query\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 220,
+        "wires": [
+            [
+                "3cb228ae42de548b"
+            ]
+        ]
+    },
+    {
+        "id": "c5479ebfc155d06f",
+        "type": "ui_spacer",
+        "z": "a72c3daf4eab12bd",
+        "name": "spacer",
+        "group": "75b11f368767b37c",
+        "order": 1,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "36944b265f38a503",
+        "type": "ui_spacer",
+        "z": "a72c3daf4eab12bd",
+        "name": "spacer",
+        "group": "75b11f368767b37c",
+        "order": 3,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "5289cd1bd92fd5d7",
+        "type": "ui_spacer",
+        "z": "a72c3daf4eab12bd",
+        "name": "spacer",
+        "group": "75b11f368767b37c",
+        "order": 4,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "16d7b86010327f2c",
+        "type": "ui_spacer",
+        "z": "a72c3daf4eab12bd",
+        "name": "spacer",
+        "group": "75b11f368767b37c",
+        "order": 5,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "be4941749f927ebe",
+        "type": "ui_spacer",
+        "z": "a72c3daf4eab12bd",
+        "name": "spacer",
+        "group": "75b11f368767b37c",
+        "order": 6,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "4f00cfc658d5d95c",
+        "type": "ui_spacer",
+        "z": "a72c3daf4eab12bd",
+        "name": "spacer",
+        "group": "75b11f368767b37c",
+        "order": 7,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "94ac7b6760a7cb02",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "broker.hivemq.com",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "5",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": "0"
+    },
+    {
+        "id": "9f3f678c8a048aa6",
+        "type": "ui_group",
+        "name": "Current Ambient Temperature",
+        "tab": "7245dd6a6c512924",
+        "order": 1,
+        "disp": true,
+        "width": "12",
+        "collapse": true,
+        "className": ""
+    },
+    {
+        "id": "3c935043d87b0ec9",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "127.0.0.1",
+        "port": "3308",
+        "db": "IOTDBA_2022_05_database",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "75b11f368767b37c",
+        "type": "ui_group",
+        "name": "Refresh",
+        "tab": "7245dd6a6c512924",
+        "order": 3,
+        "disp": true,
+        "width": "7",
+        "collapse": true,
+        "className": ""
+    },
+    {
+        "id": "7245dd6a6c512924",
+        "type": "ui_tab",
+        "name": "Temperature Monitoring system",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
